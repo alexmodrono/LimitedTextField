@@ -2,7 +2,7 @@
 
 A simple TextField with a maximum lenght, for SwiftUI.
 
-![](https://github.com/iAlex11/LimitedTextField/demo.gif)
+![Demo](./Demo.gif)
 
 ## Installation
 Installing LimitedTextField is a really straight-forward process. All you need to do is:
