@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 
+public enum LimitedTextFieldCounterType { case byWord(Int); case byCharacter(Int) }
+
 /// An ObservableObject that keeps track of the lenght of the content inside the TextField.
 ///
 /// - Parameters:
@@ -17,11 +19,53 @@ import SwiftUI
 /// - Since: v1.0
 ///
 @available(iOS 13.0, OSX 10.15, tvOS 13.0, watchOS 6.0, *)
-class LimitedTextBindingManager: ObservableObject {
+public class LimitedTextBindingManager: ObservableObject {
     
-    @Published var characterLimitReached: Bool = false
+    // MARK: - STORED PROPERTIES
     
-    @Published var text = "" {
+    public let countType: LimitedTextFieldCounterType
+    
+    public var characterLimit: Int?
+    public var wordLimit: Int?
+
+    // MARK: - INITIALIZERS
+
+    /// - Parameters:
+    ///     - limit: The maximum amount of characters allowed.
+    ///
+    public init(limit: Int = 5) {
+        
+        countType = .byCharacter(5)
+        characterLimit = limit
+        wordLimit = nil
+        
+    }
+
+    /// - Parameters:
+    ///     - limit: A LimitedtextFieldCounterType with the maximum amount of characters or words allowed.
+    public init(limit: LimitedTextFieldCounterType) {
+        
+        countType = limit
+        wordLimit = nil
+        characterLimit = nil
+        
+        if case .byWord(let maxLenght) = limit {
+            
+            wordLimit = maxLenght
+            
+        } else if case .byCharacter(let maxLenght) = limit {
+            
+            characterLimit = maxLenght
+            
+        }
+        
+    }
+    
+    /// Used to notify when the character limit is reached.
+    @Published public var characterLimitReached: Bool = false
+    
+    /// The actual content of the textfield.
+    @Published public var text = "" {
         didSet {
             
             if let characterLimit = characterLimit {
@@ -65,41 +109,4 @@ class LimitedTextBindingManager: ObservableObject {
         }
     }
     
-    var countType: LimitedTextFieldCounterType
-    
-    var characterLimit: Int?
-    var wordLimit: Int?
-//    let amountLeft: Int
-    
-    init(limit: Int = 5) {
-        
-        countType = .byCharacter(5)
-        characterLimit = limit
-        wordLimit = nil
-        
-    }
-    
-    init(limit: LimitedTextFieldCounterType) {
-        
-        countType = limit
-        wordLimit = nil
-        characterLimit = nil
-        
-        if case .byWord(let maxLenght) = limit {
-            
-            wordLimit = maxLenght
-            
-        } else if case .byCharacter(let maxLenght) = limit {
-            
-            characterLimit = maxLenght
-            
-        }
-        
-    }
-    
-}
-
-public enum LimitedTextFieldCounterType {
-    case byWord(Int)
-    case byCharacter(Int)
 }

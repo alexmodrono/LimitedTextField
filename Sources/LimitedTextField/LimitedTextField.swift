@@ -47,9 +47,26 @@ import SwiftUI
 @available(iOS 13.0, OSX 10.15, tvOS 13.0, watchOS 6.0, *)
 public struct LimitedTextField: View {
     
-    @State var placeholder: String?
-    @ObservedObject var content = LimitedTextBindingManager(limit: 20)
+    // MARK: - STORED PROPERTIES
     
+    public let placeholder: String?
+    @ObservedObject public var content: LimitedTextBindingManager
+    
+    // MARK: - INITIALIZERS
+    ///
+    /// - Parameters:
+    ///     - placeholder: The placeholder of the TextField.
+    ///     - content: A LimitedTextBindingManager that tells the TextField the limit amount of characters or words.
+    ///
+    public init(
+        placeholder: String? = nil,
+        _ content: LimitedTextBindingManager = LimitedTextBindingManager(limit: 20)
+    ) {
+        self.placeholder = placeholder
+        self.content = content
+    }
+    
+    /// Declares the content and behavior of this view.
     public var body: some View {
         
         HStack {
@@ -67,6 +84,9 @@ public struct LimitedTextField: View {
         
     }
     
+    // MARK: - HELPER FUNCTIONS
+    
+    /// If no placeholder is given, the placeholder will be "X words/characters maximum".
     private func getPlaceholder() -> String {
         
         if let placeholder = placeholder {
@@ -79,6 +99,7 @@ public struct LimitedTextField: View {
         
     }
     
+    /// Returns a color based on how many characters (or words) are left.
     private func getColor() -> Color {
         
         if let characterLimit = self.content.characterLimit {
@@ -133,7 +154,7 @@ extension LimitedTextField {
     ///
     public func counter(_ limit: Int) -> LimitedTextField {
         
-        return LimitedTextField(content: LimitedTextBindingManager(limit: limit))
+        return LimitedTextField(LimitedTextBindingManager(limit: limit))
         
     }
     
@@ -146,7 +167,7 @@ extension LimitedTextField {
     ///
     public func counter(_ limit: LimitedTextFieldCounterType) -> LimitedTextField {
         
-        return LimitedTextField(content: LimitedTextBindingManager(limit: limit))
+        return LimitedTextField(LimitedTextBindingManager(limit: limit))
         
     }
     
